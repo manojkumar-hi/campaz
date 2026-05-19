@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field
+from bson.objectid import ObjectId
 from typing import List, Optional
 from datetime import datetime
 
 class Comment(BaseModel):
+    id: str = Field(default_factory=lambda: str(ObjectId()))
     user_id: str
     user_name: str
     text: str
@@ -21,3 +23,4 @@ class PostOut(BaseModel):
     image: Optional[str] = None
     created_at: datetime
     comments: List[Comment] = []
+    likes: List[str] = []  # Add likes field for frontend

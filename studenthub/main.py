@@ -2,7 +2,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from studenthub.routes import auth, posts
+from .routes import auth, posts
 from dotenv import load_dotenv
 import os
 
@@ -13,6 +13,7 @@ app = FastAPI()
 # Allow your frontend origin
 origins = [
     "http://localhost:5173",  # your React dev server
+    "http://127.0.0.1:5173",  # alternative localhost format
     "https://studentcollaborationhub.onrender.com", # deployed frontend
     "https://studentcollaborationhub.onrender.com/", # with trailing slash
     "https://studentcollaborationhub.onrender.com/profile", # profile route

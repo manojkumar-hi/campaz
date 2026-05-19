@@ -96,18 +96,17 @@ def get_posts():
     for post in posts:
         like_count = len(post.get("likes", []))
         # Optionally, get current user from request context if available
-        result.append({
-            "id": str(post["_id"]),
-            "user_id": post["user_id"],
-            "user_name": post["user_name"],
-            "user_profilePic": post.get("user_profilePic"),
-            "content": post["content"],
-            "image": post.get("image"),
-            "created_at": post["created_at"],
-            "comments": [Comment(**c) for c in post.get("comments", [])],
-            "like_count": like_count,
-            # "liked_by_current_user": ... (frontend can check this if needed)
-        })
+        result.append(PostOut(
+            id=str(post["_id"]),
+            user_id=post["user_id"],
+            user_name=post["user_name"],
+            user_profilePic=post.get("user_profilePic"),
+            content=post["content"],
+            image=post.get("image"),
+            created_at=post["created_at"],
+            comments=[Comment(**c) for c in post.get("comments", [])],
+            likes=post.get("likes", [])
+        ))
     return result
 
 from fastapi import Body
@@ -152,5 +151,24 @@ def delete_comment(post_id: str, comment_index: int, current_user: dict = Depend
     if str(comments[comment_index]["user_id"]) != str(current_user["_id"]):
         raise HTTPException(status_code=403, detail="Not authorized to delete this comment")
     comments.pop(comment_index)
+    db.posts.update_one({"_id": ObjectId(post_id)}, {"$set": {"comments": comments}})
+    return {"message": "Comment deleted successfully"}
+
+
+# New: delete comment by unique id
+@router.delete("/{post_id}/comment/id/{comment_id}")
+def delete_comment_by_id(post_id: str, comment_id: str, current_user: dict = Depends(get_current_user)):
+    post = db.posts.find_one({"_id": ObjectId(post_id)})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    comments = post.get("comments", [])
+    # find comment by id
+    idx = next((i for i, c in enumerate(comments) if str(c.get("id")) == str(comment_id)), None)
+    if idx is None:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    # Only allow the comment's author to delete
+    if str(comments[idx].get("user_id")) != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Not authorized to delete this comment")
+    comments.pop(idx)
     db.posts.update_one({"_id": ObjectId(post_id)}, {"$set": {"comments": comments}})
     return {"message": "Comment deleted successfully"}
