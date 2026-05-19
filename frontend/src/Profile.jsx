@@ -13,7 +13,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
     if (profilePic) {
       formData.append("file", profilePic);
     }
-    fetch("http://127.0.0.1:8000/auth/profile/update", {
+    fetch(`${API_BASE_URL}/auth/profile/update`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
       body: formData
@@ -23,7 +23,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
         setUser(data);
         setEditProfile(false);
         // Refetch posts so updated profile info appears everywhere
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -89,7 +89,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
   // Fetch posts from backend on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://127.0.0.1:8000/posts", {
+    fetch(`${API_BASE_URL}/posts`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     })
       .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -135,7 +135,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
     })
       .then(res => res.ok ? res.json() : Promise.reject("Failed to update like"))
       .then(() => {
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -158,7 +158,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
     })
       .then(res => res.ok ? res.json() : Promise.reject("Failed to add comment"))
       .then(() => {
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -185,7 +185,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
     })
       .then(res => res.ok ? res.json() : Promise.reject("Failed to delete comment"))
       .then(() => {
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -213,7 +213,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
       })
       .then(response => {
         console.log("Delete post response:", response);
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -239,7 +239,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
     if (profilePic) {
       formData.append("file", profilePic);
     }
-    fetch("http://127.0.0.1:8000/auth/profile/update", {
+    fetch(`${API_BASE_URL}/auth/profile/update`, {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
       body: formData
@@ -269,7 +269,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
     if (newImage) {
       formData.append("file", newImage); // Use 'file' for backend compatibility
     }
-    fetch("http://127.0.0.1:8000/posts", {
+    fetch(`${API_BASE_URL}/posts`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -279,7 +279,7 @@ export default function Profile({ posts, setPosts, user, setUser }) {
       .then(res => res.ok ? res.json() : Promise.reject("Failed to create post"))
       .then(post => {
         // Refetch posts for consistency
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))

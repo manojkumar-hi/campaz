@@ -55,7 +55,7 @@ export default function Dashboard({ posts, setPosts, user }) {
     })
       .then(res => res.ok ? res.json() : Promise.reject("Failed to add comment"))
       .then(() => {
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -81,7 +81,7 @@ export default function Dashboard({ posts, setPosts, user }) {
     })
       .then(res => res.ok ? res.json() : Promise.reject("Failed to delete comment"))
       .then(() => {
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
@@ -105,7 +105,7 @@ export default function Dashboard({ posts, setPosts, user }) {
         return res.json();
       })
       .then(() => {
-        fetch("http://127.0.0.1:8000/posts", {
+        fetch(`${API_BASE_URL}/posts`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         })
           .then(res => res.ok ? res.json() : Promise.reject("Failed to fetch posts"))
